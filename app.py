@@ -61,6 +61,7 @@ def kpi(label, id_val):
     ], style=KPI_CARD)
 
 app.layout = html.Div([
+    dcc.Interval(id='init-trigger', interval=500, n_intervals=0, max_intervals=1),
     html.Div([
         html.Div([
             html.H1("NYC Airbnb Dashboard",
@@ -180,12 +181,13 @@ app.layout = html.Div([
     Output('chart-ts',    'figure'),
     Output('chart-donut', 'figure'),
     Output('chart-hist',  'figure'),
+    Input('init-trigger',  'n_intervals'),
     Input('filter-borough','value'),
     Input('filter-room',   'value'),
     Input('filter-price',  'value'),
     Input('filter-avail',  'value'),
 )
-def update_all(boroughs, rooms, price_range, avail):
+def update_all(n_intervals, boroughs, rooms, price_range, avail):
     dff = df.copy()
     if boroughs: dff = dff[dff['neighbourhood_group'].isin(boroughs)]
     if rooms:    dff = dff[dff['room_type'].isin(rooms)]
